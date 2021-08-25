@@ -26,7 +26,8 @@ namespace UIAutomationBDD.Pages
 
         protected string TabSelector => "#block_top_menu ul li a";
 
-        protected string ProductListViewSelector = "ul.product_list li";
+        protected string ProductListViewSelector = ".right-block a.product-name";
+        protected string ProductListGridViewSelector = "ul.product_list li"; 
         protected string AddToCartSelector => "#add_to_cart button";
         protected string AddToCartSelectorText => "Add to cart";
         protected string ProceedToCheckoutPopupSelector => "#layer_cart div.button-container a span";
@@ -63,14 +64,17 @@ namespace UIAutomationBDD.Pages
         /* Order a T-shirt */
 
         public void SelectTshirtTab(string tabName)
-        {
+        {          
             var tabList = Driver.FindElements(By.CssSelector(TabSelector));
-            tabList.FirstOrDefault(e => e.Text.Equals(tabName))?.Click();           
+            tabList.FirstOrDefault(e => e.Text.Equals(tabName))?.Click();
+
         }
 
         public void ChooseTshirt()
         {
-            Driver.FindElement(By.CssSelector(ProductListViewSelector)).Click();
+            WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+            var productListViewSelectorElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(ProductListViewSelector)));
+            productListViewSelectorElement.Click();
         }
                
         public void AddToCart()
@@ -79,9 +83,9 @@ namespace UIAutomationBDD.Pages
             Assert.True(addCartText.ToLower().Equals(AddToCartSelectorText.ToLower()), $"Button is not having {addCartText}");
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
             var addToCartSelectorElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(AddToCartSelector)));
-            var proceedToCheckoutPopupSelectorElement = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(ProceedToCheckoutPopupSelector)));
-
             addToCartSelectorElement.Click();
+            WebDriverWait waitNew = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            var proceedToCheckoutPopupSelectorElement = waitNew.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(ProceedToCheckoutPopupSelector)));            
             proceedToCheckoutPopupSelectorElement.Click();
         }
 
